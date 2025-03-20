@@ -1,15 +1,13 @@
-from moviepy import VideoFileClip, VideoClip, ImageClip, concatenate_videoclips
 import os
-import tensorflow as tf
-import tensorflow_hub as hub
-import IPython.display as display
-import matplotlib.pyplot as plt
+import time
+
+import matplotlib
 import matplotlib as mpl
 import numpy as np
-import PIL.Image
-import time
-import functools
-import matplotlib
+import tensorflow as tf
+import tensorflow_hub as hub
+from moviepy import VideoFileClip, ImageClip, concatenate_videoclips
+
 matplotlib.use('Agg')  # Use TkAgg backend
 
 # Load compressed models from tensorflow_hub
