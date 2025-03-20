@@ -55,21 +55,27 @@ style_reference = convert_image(tf.image.decode_image(raw_image, channels=3))
 # Create video clip to store the result
 stylized_frames = list()
 
+# Learned from Kaszanas (2019) for how to find the number of frames. Learned from MoviePy – Getting Duration of Video
+# File Clip (2020) how to find the duration of the clip.
 frame_duration = original_clip.duration / original_clip.n_frames
 
 print("Starting stylization.")
 start_time = time.time()
+# Referenced Moviepy.Clip.Clip — MoviePy Documentation, Iter_frames() (n.d.) for how to iterate over frames.
 for frame in original_clip.iter_frames():
     tensor_frame = tf.convert_to_tensor(frame, dtype=tf.uint8)
     original_image = convert_image(tensor_frame)
     stylized_image = hub_model(tf.constant(original_image), tf.constant(style_reference))[0]
     conversion_result = tensor_to_image(stylized_image)
+    # Referenced Moviepy.Clip.Clip — MoviePy Documentation, With_duration() (n.d.) for use of with_duration().
     image_clip = ImageClip(conversion_result).with_duration(frame_duration)
     stylized_frames.append(image_clip)
 end_time = time.time()
 print(f"Finished stylization. Took {end_time - start_time} seconds for {original_clip.duration} seconds of video.")
 
 print("Writing stylized video.")
+# Inspired by Mr K. (2022) and Blanco (2017). Referenced
+# Moviepy.Video.Compositing.CompositeVideoClip.Concatenate_videoclips — MoviePy Documentation (n.d.).
 target_clip = concatenate_videoclips(stylized_frames, method="compose")
-# Adapted from MoviePy –Saving Video File Clip (2022).
+# Adapted from MoviePy –Saving Video File Clip (2022). Referenced Dey (2019).
 target_clip.write_videofile("test/output.mp4", fps=original_clip.fps)
